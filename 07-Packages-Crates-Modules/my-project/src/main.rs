@@ -2,6 +2,7 @@ mod sound {
     pub mod instrument {
         pub mod woodwind {
             pub fn clarinet() {
+                super::breathe_in();
                 println!("toot");
             }
         }
@@ -9,6 +10,9 @@ mod sound {
             pub fn guitar() {
                 println!("meedlymeeldymeedlyWAAAAAAAA");
             }
+        }
+        fn breathe_in() {
+            println!("shpp");
         }
     }
     pub mod voice {
