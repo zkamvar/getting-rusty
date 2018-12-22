@@ -37,13 +37,19 @@ mod plant {
         }
     }
 }
+
+// Bringin modules into scope
+use crate::sound::instrument; // absolute path
+use self::sound::voice;       // relative path
+use self::plant::Vegetable;
+
 fn main() {
     // Part 1
-    crate::sound::instrument::woodwind::clarinet(); // absolute path
-    sound::instrument::string::guitar();            // relative path
-    sound::voice::soprano();
+    instrument::woodwind::clarinet(); 
+    instrument::string::guitar();
+    voice::soprano();
     // Part 2
-    let mut v = plant::Vegetable::new("squash");
+    let mut v = Vegetable::new("squash");
     v.name = String::from("Butternut squash");
     println!("{} are delicious!", v.name);
     println!("The vegetable struct is\n{:#?}\nThe name is public, but the id is private", v);
