@@ -1,22 +1,24 @@
 mod sound {
-    mod instrument {
-        mod woodwind {
-            fn clarinet() {
+    pub mod instrument {
+        pub mod woodwind {
+            pub fn clarinet() {
                 println!("toot");
             }
         }
-        mod string {
-            fn guitar() {
+        pub mod string {
+            pub fn guitar() {
                 println!("meedlymeeldymeedlyWAAAAAAAA");
             }
         }
     }
-    mod voice {
-        fn soprano () {
+    pub mod voice {
+        pub fn soprano () {
           println!("EEEEE");  
         }
     }
 }
 fn main() {
-    println!("Hello, world!");
+    crate::sound::instrument::woodwind::clarinet();
+    sound::instrument::string::guitar();
+    sound::voice::soprano();
 }
