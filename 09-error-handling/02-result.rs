@@ -1,4 +1,5 @@
 use std::io;
+use std::fs;
 use std::io::ErrorKind; // For treating different kinds of errors
 use std::io::Read;
 use std::fs::File;
@@ -7,7 +8,7 @@ fn main() {
     // panic_at_the_disco();
     // wait_panic();
     // use_expect();
-    let f = read_username_from_file().expect("no file!?");
+    let f = read_username_from_file_four().expect("no file!?");
     println!("woo! {}", f);
 }
 
@@ -64,4 +65,23 @@ fn read_username_from_file() -> Result<String, io::Error> {
         Ok(_) => Ok(s),
         Err(dang) => return Err(dang),
     }
+}
+// This code is equivalent to the code above because we are adding the 
+// '?' operator at the end of error throwing lines.
+fn read_username_from_file_two() -> Result<String, io::Error> {
+    let mut f = File::open("hello.txt")?;
+    let mut s = String::new();
+    f.read_to_string(&mut s)?;
+    Ok(s)
+}
+
+fn read_username_from_file_three() -> Result<String, io::Error> {
+    let mut s = String::new();
+    File::open("hello.txt")?
+        .read_to_string(&mut s)?;
+    Ok(s)
+}
+
+fn read_username_from_file_four() -> Result<String, io::Error> {
+    fs::read_to_string("hello.txt")
 }
