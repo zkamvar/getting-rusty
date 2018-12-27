@@ -16,4 +16,15 @@ fn main() {
         }
     }
     println!("the largest number is {}", largest);
+
+    let number_list = vec![02, 1, 24, 3, 5, 1, 100, 8, 3, 33, 5];
+
+    let mut largest = number_list[0];
+
+    for number in number_list {
+        if number > largest {
+            largest = number;
+        }
+    }
+    println!("the largest number is {}", largest);
 }
