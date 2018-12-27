@@ -1,3 +1,4 @@
+#![allow(unused_variables)]
 // Generics, are Rust's way of handling duplicate concepts.
 //
 // This lesson will cover
@@ -38,6 +39,21 @@ fn largest_char(list: &[char])-> char {
     largest
 }
 
+// Structs and enums ----------------------------------------------------------
+
+// A struct can be generic, but if it has one generic type, all types must be
+// the same
+struct Pint<T> {
+    x: T,
+    y: T,
+}
+
+// multiple fields in the struct can have different generic types
+struct Point<T, U> {
+    x: T,
+    y: U,
+}
+
 fn main() {
     let number_list = vec![38, 203, 38, 2837, 39, 7];
     println!("the largest number is {}", largest(&number_list));
@@ -50,6 +66,15 @@ fn main() {
 
     println!("the largest character is {}", largest_char(&char_list));
     println!("the largest number is {}", largest_i32(&number_list));
+
+    // all types must be the same if the struct only has one type
+    let pint = Pint { x: 5, y: 10};
+    let pint = Pint { x: 5.0, y: 10.0};
+    // let wont_work = Pint { x: 5.0, y: 10 }`
+
+    let point = Point { x: 5, y: 10};
+    let point = Point { x: 5.0, y: 10.0};
+    let will_work = Point { x: 5.0, y: 10 };
 }
 
 
