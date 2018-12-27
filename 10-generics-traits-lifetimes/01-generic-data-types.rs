@@ -6,25 +6,21 @@
 // 2. How construct a generic function that differ only in the parameter types
 // 3. How to use generic types in struct and enum definitions
 
-fn main() {
-    let number_list = vec![38, 203, 38, 2837, 39, 7];
-    let mut largest = number_list[0];
-
-    for number in number_list {
+fn largest(list: Vec<i32>) -> i32 {
+    let mut largest = list[0];
+    for number in list {
         if number > largest {
             largest = number;
         }
     }
-    println!("the largest number is {}", largest);
+    largest
+}
+
+fn main() {
+    let number_list = vec![38, 203, 38, 2837, 39, 7];
+    println!("the largest number is {}", largest(number_list));
 
     let number_list = vec![02, 1, 24, 3, 5, 1, 100, 8, 3, 33, 5];
 
-    let mut largest = number_list[0];
-
-    for number in number_list {
-        if number > largest {
-            largest = number;
-        }
-    }
-    println!("the largest number is {}", largest);
+    println!("the largest number is {}", largest(number_list));
 }
