@@ -16,22 +16,6 @@ fn largest(list: &[i32])-> i32 {
     }
     largest
 }
-
-fn main() {
-    let number_list = vec![38, 203, 38, 2837, 39, 7];
-    println!("the largest number is {}", largest(&number_list));
-
-    let number_list = vec![02, 1, 24, 3, 5, 1, 100, 8, 3, 33, 5];
-
-    println!("the largest number is {}", largest(&number_list));
-    
-    let char_list = vec!['a', 'f', 'w', 't', 'h'];
-
-    println!("the largest character is {}", largest_char(&char_list));
-    println!("the largest number is {}", largest_i32(&number_list));
-}
-
-
 // Generic Data Types in function definitions ----------------------------------
 
 fn largest_i32(list: &[i32])-> i32 {
@@ -53,3 +37,19 @@ fn largest_char(list: &[char])-> char {
     }
     largest
 }
+
+fn main() {
+    let number_list = vec![38, 203, 38, 2837, 39, 7];
+    println!("the largest number is {}", largest(&number_list));
+
+    let number_list = vec![02, 1, 24, 3, 5, 1, 100, 8, 3, 33, 5];
+
+    println!("the largest number is {}", largest(&number_list));
+    
+    let char_list = vec!['a', 'f', 'w', 't', 'h'];
+
+    println!("the largest character is {}", largest_char(&char_list));
+    println!("the largest number is {}", largest_i32(&number_list));
+}
+
+
