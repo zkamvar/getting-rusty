@@ -7,6 +7,7 @@
 // 3. How to use generic types in struct and enum definitions
 
 fn largest(list: &[i32])-> i32 {
+// fn largest<T>(list: &[T])-> T {
     let mut largest = list[0];
     for &number in list.iter() {
         if number > largest {
