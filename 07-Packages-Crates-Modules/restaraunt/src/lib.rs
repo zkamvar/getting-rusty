@@ -4,9 +4,9 @@
 mod front_of_house {
     // Public elements must be declared all down the tree
     pub mod hosting {
-       pub fn add_to_waitlist() {}
+        pub fn add_to_waitlist() {}
 
-       fn seat_at_table() {}
+        fn seat_at_table() {}
     }
 
     mod serving {
@@ -24,21 +24,40 @@ mod front_of_house {
 fn serve_order() {}
 
 mod back_of_house {
-    fn fix_incorrect_order() {
-        cook_order();
-        super::serve_order();
+    // All elements of this enum are public
+    pub enum Beverage {
+        Coffee,
+        Tea,
+        Juice,
+    }
+    pub struct Breakfast {
+        pub toast: String,
+        seasonal_fruit: String,
     }
 
-    fn cook_order() {}
+    impl Breakfast {
+        pub fn summer(toast: &str) -> Breakfast {
+            Breakfast {
+                toast: String::from(toast),
+                seasonal_fruit: String::from("peaches"),
+            }
+        }
+        pub fn winter(toast: &str) -> Breakfast {
+            Breakfast {
+                toast: String::from(toast),
+                seasonal_fruit: String::from("persimmon"),
+            }
+        }
+    }
 }
 
-// using the pub keyword to expose a function to the API
 pub fn eat_at_restaraunt() {
-    // Absolute path
-    crate::front_of_house::hosting::add_to_waitlist();
-
-    // Relative path
-    front_of_house::hosting::add_to_waitlist();
+    // Order a breakfast in the summer with Rye toast
+    let mut meal  = back_of_house::Breakfast::summer("Rye");
+    let mut drink = back_of_house::Beverage::Coffee;
+    // Change our mind about what break we'd like at the last minute
+    meal.toast = String::from("Wheat");
+    println!("I'd like {} toast, plz", meal.toast);
 }
 
 #[cfg(test)]
