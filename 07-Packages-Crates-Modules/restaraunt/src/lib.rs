@@ -31,31 +31,11 @@ mod back_of_house {
     }
 }
 
-// Nested modules create a tree from the root of the crate
-//
-// crate/front_of_house/hosting/add_to_waitlist
-mod front_of_house {
-    // Public elements must be declared all down the tree
-    pub mod hosting {
-        pub fn add_to_waitlist() {}
 
-        fn seat_at_table() {}
-    }
-
-    mod serving {
-        fn take_order() {}
-
-        fn serve_order() {}
-
-        fn take_payment() {}
-    }
-}
-
-// Bring path into scope
-// use crate::front_of_house::hosting;
+mod front_of_house;
 
 // Re-export hosting path.
-pub use self::front_of_house::hosting;
+pub use crate::front_of_house::hosting;
 
 // Using the as syntax to provide a new name
 // use self::front_of_house::hosting::add_to_waitlist as host_waitlist;
