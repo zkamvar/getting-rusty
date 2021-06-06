@@ -1,3 +1,4 @@
+// Note: these are both needed in order for rust to recognise these as modules
 mod sound; 
 mod plant; 
 

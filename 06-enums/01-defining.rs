@@ -17,13 +17,19 @@ enum Message {
 }
 
 // Enums can also have methods associated
-
+impl Message {
+    fn call(&self) {
+        // something goes here, but it's a bit of a mystery to me
+    }
+}
 
 // The Option enum ------------------------------------------------------------
 // 
 // This is an enum that allows for some or none of something to be defined:
 
 fn main() {
+    let m = Message::Write(String::from("hello"));
+    // m.call();
     let some_number = Some(5);
     let some_string = Some("a string");
     let absent_number: Option<i32> = None; // This is none for now, but could be an i32 later
