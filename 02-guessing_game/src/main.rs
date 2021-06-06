@@ -16,7 +16,8 @@ fn main() {
 
         let mut guess = String::new();
 
-        io::stdin().read_line(&mut guess)
+        io::stdin()
+            .read_line(&mut guess)
             .expect("Failed to read line!!!!!11one!!");
 
         let guess: u32 = match guess.trim().parse() {
