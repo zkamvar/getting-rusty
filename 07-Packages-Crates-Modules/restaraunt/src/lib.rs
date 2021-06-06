@@ -1,37 +1,4 @@
-// Back of house demonstrates super module
-//
-// Note that these should move together to make sure that super:: works. 
-fn serve_order() {}
-
-mod back_of_house {
-    // All elements of this enum are public
-    pub enum Beverage {
-        Coffee,
-        Tea,
-        Juice,
-    }
-    pub struct Breakfast {
-        pub toast: String,
-        seasonal_fruit: String,
-    }
-
-    impl Breakfast {
-        pub fn summer(toast: &str) -> Breakfast {
-            Breakfast {
-                toast: String::from(toast),
-                seasonal_fruit: String::from("peaches"),
-            }
-        }
-        pub fn winter(toast: &str) -> Breakfast {
-            Breakfast {
-                toast: String::from(toast),
-                seasonal_fruit: String::from("persimmon"),
-            }
-        }
-    }
-}
-
-
+mod back_of_house;
 mod front_of_house;
 
 // Re-export hosting path.
