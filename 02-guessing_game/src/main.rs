@@ -7,7 +7,9 @@ use rand::Rng;
 fn main() {
     println!("Guess the number!");
 
-    let secret_number = rand::thread_rng().gen_range(1, 101);
+    // IDK if it helps to use explicit typing here, but It's good to remind
+    // myself what's going on.
+    let secret_number: u32 = rand::thread_rng().gen_range(1, 101);
 
     println!("The secret number is: {}", secret_number);
 
