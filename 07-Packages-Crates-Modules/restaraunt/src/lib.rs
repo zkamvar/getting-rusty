@@ -51,14 +51,19 @@ mod front_of_house {
     }
 }
 
+// Bring path into scope
+// use crate::front_of_house::hosting;
+
+// Re-export hosting path.
+pub use self::front_of_house::hosting;
+
+// Using the as syntax to provide a new name
+// use self::front_of_house::hosting::add_to_waitlist as host_waitlist;
 
 pub fn eat_at_restaraunt() {
-    // Order a breakfast in the summer with Rye toast
-    let mut meal  = back_of_house::Breakfast::summer("Rye");
-    let mut drink = back_of_house::Beverage::Coffee;
-    // Change our mind about what break we'd like at the last minute
-    meal.toast = String::from("Wheat");
-    println!("I'd like {} toast, plz", meal.toast);
+    // use of hosting:: here is idiomatic to show that we are using an external
+    // module to this function. 
+    hosting::add_to_waitlist();
 }
 
 #[cfg(test)]
