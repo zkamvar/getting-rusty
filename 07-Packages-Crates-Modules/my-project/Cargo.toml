@@ -1,5 +1,5 @@
 [package]
-name = "my-project"
+name = "Packages Crates and Modules"
 version = "0.1.0"
 authors = ["Zhian N. Kamvar <zkamvar@gmail.com>"]
 edition = "2018"
