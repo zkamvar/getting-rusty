@@ -104,8 +104,8 @@ fn main() {
     println!("the largest number is {}", largest(&number_list));
 
     let char_list = vec!['a', 'f', 'w', 't', 'h'];
-    println!("the largest character is {}", largest_char(&char_list));
-    println!("the largest number is {}", largest_i32(&number_list));
+    println!("the largest character is {}", largest(&char_list));
+    println!("the largest number is {}", largest(&number_list));
 
     // Structs ---
     // all types must be the same if the struct only has one type
