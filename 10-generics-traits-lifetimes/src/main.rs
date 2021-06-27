@@ -7,16 +7,15 @@
 // 2. How construct a generic function that differ only in the parameter types
 // 3. How to use generic types in struct and enum definitions
 
-fn largest(list: &[i32])-> i32 {
-// fn largest<T>(list: &[T])-> T {
-    let mut largest = list[0];
-    for &number in list.iter() {
-        if number > largest {
-            largest = number;
-        }
-    }
-    largest
-}
+// fn largest(list: &[i32])-> i32 {
+//     let mut largest = list[0];
+//     for &number in list.iter() {
+//         if number > largest {
+//             largest = number;
+//         }
+//     }
+//     largest
+// }
 // Generic Data Types in function definitions ----------------------------------
 
 fn largest_i32(list: &[i32])-> i32 {
@@ -48,15 +47,15 @@ fn largest_char(list: &[char])-> char {
 // than operator, which needs a type that can be ordered. At the moment, our 
 // definition allows _ANYTHING_ including unordered types.
 
-// fn largest<T>(list: &[T]) -> T {
-//     let mut largest = list[0];
-//     for &number in list.iter() {
-//         if number > largest {
-//             largest = number;
-//         }
-//     }
-//     largest
-// }
+fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {
+    let mut largest = list[0];
+    for &item in list {
+        if item > largest {
+            largest = item;
+        }
+    }
+    largest
+}
 
 // Structs and enums ----------------------------------------------------------
 
