@@ -100,4 +100,22 @@ pub fn notify<T: Summary>(item: &T) {
 //      {
 //          // Function Body
 //      }
+
+// Returning Types that Implement Traits --------------------------------------
 //
+// If we want to return a type of a trait, we can do that by declaring `impl Trait`
+// in the return type:
+//
+// NOTE: you can only return ONE TYPE per Trait. This means, that we need to
+// define different functions for different Types.  
+fn returns_summarizable_tweet() -> impl Summary {
+    Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        retweet: false,
+    }
+}
+
