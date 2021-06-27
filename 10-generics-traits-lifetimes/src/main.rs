@@ -88,8 +88,9 @@ impl Pint<f32> {
 }
 
 // Traits ---------------------------------------------------------------------
-
-
+// These are a way to group method signatures together to define a set of
+// behaviors necessary to accomplish the same purpose.
+use generics::{self, Summary, Tweet};
 
 fn main() {
     // Functions ---
@@ -117,6 +118,17 @@ fn main() {
     let point = Point { x: 5, y: 10};
     let point = Point { x: 5.0, y: 10.0};
     let will_work = Point { x: 5.0, y: 10 };
+
+    // Traits
+    let tweet = Tweet {
+        username: String::from("dril"),
+        content: String::from(
+            "No More Fooling Around: if your post sucks my balls , it will be regarded as SHIT !!!!",
+        ),
+        reply: false,
+        retweet: false,
+    };
+    println!("1 new tweet\n{}", tweet.summarize());
 }
 
 
