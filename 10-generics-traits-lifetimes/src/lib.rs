@@ -36,6 +36,6 @@ pub struct Tweet {
 
 impl Summary for Tweet {
     fn summarize(&self) -> String {
-    format!("from   : {}\nmessage: \"{}\"", self.username, self.content)
+        format!("from   : {}\nmessage: \"{}\"", self.username, self.content)
     }
 }

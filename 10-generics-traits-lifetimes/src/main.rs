@@ -94,7 +94,7 @@ impl Pint<f32> {
 // Here, Summary is a trait on the Tweet Type. We can implement this because we
 // have defined Tweet in our crate. But, we cannot implement this on a type that
 // is outside of our crate.
-use chapter10::{self, Summary, Tweet};
+use chapter10::{self, Summary, Tweet, NewsArticle};
 
 fn main() {
     // Functions ---
@@ -133,6 +133,17 @@ fn main() {
         retweet: false,
     };
     println!("1 new tweet\n{}", tweet.summarize());
+
+    let article = NewsArticle {
+        headline: String::from("NEW SHOES"),
+        location: String::from("Ragland"),
+        author: String::from("Betch"),
+        content: String::from(
+            "These shoes are three hundred fucking dollars...\
+            LET'S GET EM",
+        ),
+    };
+    println!("SHOE NEWS: {}", article.summarize());
 }
 
 
