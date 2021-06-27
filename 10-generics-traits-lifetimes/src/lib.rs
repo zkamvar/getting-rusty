@@ -54,9 +54,9 @@ impl Summary for Tweet {
 // if String or i32 types are passed.
 
 // impl Trait syntax ~~~
-pub fn notify(item: &impl Summary) {
-    println!("Breaking news! {}", item.summarize());
-}
+// pub fn notify(item: &impl Summary) {
+//     println!("Breaking news! {}", item.summarize());
+// }
 
 // Trait bound syntax ~~~
 //
@@ -118,4 +118,5 @@ fn returns_summarizable_tweet() -> impl Summary {
         retweet: false,
     }
 }
+
 

@@ -7,46 +7,16 @@
 // 2. How construct a generic function that differ only in the parameter types
 // 3. How to use generic types in struct and enum definitions
 
-// fn largest(list: &[i32])-> i32 {
-//     let mut largest = list[0];
-//     for &number in list.iter() {
-//         if number > largest {
-//             largest = number;
-//         }
-//     }
-//     largest
-// }
-// Generic Data Types in function definitions ----------------------------------
-
-fn largest_i32(list: &[i32])-> i32 {
-    let mut largest = list[0];
-    for &number in list.iter() {
-        if number > largest {
-            largest = number;
-        }
-    }
-    largest
-}
-
-fn largest_char(list: &[char])-> char {
-    let mut largest = list[0];
-    for &item in list.iter() {
-        if item > largest {
-            largest = item;
-        }
-    }
-    largest
-}
-
 // Type naming conventions ----------------------------------------------------
 //
 // Rust's Type naming conventions are CamelCase, but often the default will be
 // just a single letter, "T" for "Type".
 //
-// NOTE: This will _not_ compile because of the fact that we use the greater 
-// than operator, which needs a type that can be ordered. At the moment, our 
-// definition allows _ANYTHING_ including unordered types.
-
+// The type here takes two _traits_ for items in the list:
+//
+//  1. PartialOrd: any types that can be ordered (strings, integers, floats)
+//  2. Copy: types that are of a known size at compile time (strings, integers, floats)
+//
 fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {
     let mut largest = list[0];
     for &item in list {
@@ -56,6 +26,18 @@ fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {
     }
     largest
 }
+// ZHIAN DOES NOT KNOW HOW TO IMPLEMENT THESE
+// If we don’t want to restrict the largest function to the types that implement the Copy trait,
+// we could specify that T has the trait bound Clone instead of Copy. Then we could clone each
+// value in the slice when we want the largest function to have ownership. Using the clone
+// function means we’re potentially making more heap allocations in the case of types that own
+// heap data like String, and heap allocations can be slow if we’re working with large amounts of
+// data.
+//
+// Another way we could implement largest is for the function to return a reference to a T value in
+// the slice. If we change the return type to &T instead of T, thereby changing the body of the
+// function to return a reference, we wouldn’t need the Clone or Copy trait bounds and we could
+// avoid heap allocations. Try implementing these alternate solutions on your own!
 
 // Structs and enums ----------------------------------------------------------
 
