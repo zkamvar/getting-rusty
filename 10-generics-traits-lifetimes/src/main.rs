@@ -26,13 +26,24 @@ fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {
     }
     largest
 }
-// ZHIAN DOES NOT KNOW HOW TO IMPLEMENT THESE
+
 // If we don’t want to restrict the largest function to the types that implement the Copy trait,
 // we could specify that T has the trait bound Clone instead of Copy. Then we could clone each
 // value in the slice when we want the largest function to have ownership. Using the clone
 // function means we’re potentially making more heap allocations in the case of types that own
 // heap data like String, and heap allocations can be slow if we’re working with large amounts of
 // data.
+fn largest_clone<T: PartialOrd + Clone>(list: &[T]) -> T {
+    let mut largest = list[0].clone();
+    for i in 0..list.len() {
+        let mut item = list[i].clone();
+        if item > largest {
+            largest = item;
+        }
+    }
+    largest
+}
+// ZHIAN DOES NOT KNOW HOW TO IMPLEMENT THESE
 //
 // Another way we could implement largest is for the function to return a reference to a T value in
 // the slice. If we change the return type to &T instead of T, thereby changing the body of the
@@ -87,7 +98,7 @@ fn main() {
 
     let char_list = vec!['a', 'f', 'w', 't', 'h'];
     println!("the largest character is {}", largest(&char_list));
-    println!("the largest number is {}", largest(&number_list));
+    println!("the largest number is {}", largest_clone(&number_list));
 
     // Structs ---
     // all types must be the same if the struct only has one type
