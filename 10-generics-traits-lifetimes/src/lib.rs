@@ -8,10 +8,12 @@
 //
 // A Summary trait
 // 
-// Note that this ends with a semicolon instead of a definition, which means 
-// that each type needs to define its own method (a lot like S3).
+// NOTE: if this ends with a semicolon instead of a definition, then there is 
+// no default, and each type needs to define its own method (a lot like S3).
 pub trait Summary {
-    fn summarize(&self) -> String;
+    fn summarize(&self) -> String {
+        String::from("(Read on...)")
+    }
     // Other method signatures go here
 }
 
@@ -23,11 +25,7 @@ pub struct NewsArticle {
     pub content: String,
 }
 
-impl Summary for NewsArticle {
-    fn summarize(&self) -> String {
-    format!("{}, by {} ({})", self.headline, self.author, self.location)
-    }
-}
+impl Summary for NewsArticle {}
 
 pub struct Tweet {
     pub username: String,

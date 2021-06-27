@@ -90,7 +90,11 @@ impl Pint<f32> {
 // Traits ---------------------------------------------------------------------
 // These are a way to group method signatures together to define a set of
 // behaviors necessary to accomplish the same purpose.
-use generics::{self, Summary, Tweet};
+//
+// Here, Summary is a trait on the Tweet Type. We can implement this because we
+// have defined Tweet in our crate. But, we cannot implement this on a type that
+// is outside of our crate.
+use chapter10::{self, Summary, Tweet};
 
 fn main() {
     // Functions ---
@@ -119,7 +123,7 @@ fn main() {
     let point = Point { x: 5.0, y: 10.0};
     let will_work = Point { x: 5.0, y: 10 };
 
-    // Traits
+    // Traits ---
     let tweet = Tweet {
         username: String::from("dril"),
         content: String::from(
