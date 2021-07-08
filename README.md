@@ -10,3 +10,6 @@ use the command:
 rustup doc
 ```
 
+Note: When I started this back in 2018, the rust book changed a bit to work
+exclusively in a crate context in the later chapters, so many of these needed
+to be adjusted
