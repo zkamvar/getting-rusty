@@ -1,5 +1,5 @@
-fn is_reachable(v: &Vec<i32>, i: usize) {
-    let value: Option<&i32> = v.get(i);
+fn is_reachable<T>(v: &Vec<T>, i: usize) {
+    let value: Option<&_> = v.get(i);
     match value {
         Some(_) => println!("Reachable element at index: {}", i),
         None => println!("Unreachable element at index: {}", i),
@@ -25,7 +25,7 @@ fn main() {
     println!("the third element of 'v' is {}", third);
 
     // This allows indices to fall outside of the range
-    let mut v_index = 3;
+    let v_index = 3;
     let good_index: Option<&i32> = v.get(v_index);
     match good_index {
         Some(_) => println!("Reachable element at index: {}", v_index),
