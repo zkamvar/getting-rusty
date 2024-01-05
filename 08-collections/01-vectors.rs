@@ -1,6 +1,14 @@
+fn is_reachable(v: &Vec<i32>, i: usize) {
+    let value: Option<&i32> = v.get(i);
+    match value {
+        Some(_) => println!("Reachable element at index: {}", i),
+        None => println!("Unreachable element at index: {}", i),
+    }
+}
 fn main() {
     // let v: Vec<i32> = Vec::new();
     let v = vec![1, 2, 3]; // the vec! macro creates a vector
+    println!("the Vector 'v' is {:?}", v);
 
     // Values can be added to mutable vectors with push
     let mut v = Vec::new();
@@ -17,12 +25,15 @@ fn main() {
     println!("the third element of 'v' is {}", third);
 
     // This allows indices to fall outside of the range
-    let v_index = 69;
-    match v.get(v_index) {
-        // v.get() gives us Option<&v>
+    let mut v_index = 3;
+    let good_index: Option<&i32> = v.get(v_index);
+    match good_index {
         Some(_) => println!("Reachable element at index: {}", v_index),
         None => println!("Unreachable element at index: {}", v_index),
     }
+    // Using a function that we defined
+    is_reachable(&v, 4);
+    is_reachable(&v, 5);
 
     /* NOTE: It is illegal to make an immutable borrow and then push to
      *       a mutable vector.
