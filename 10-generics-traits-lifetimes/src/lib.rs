@@ -7,11 +7,13 @@
 //  - Tweet: maximum 280 chars, metadata new tweet, retweet, reply
 //
 // A Summary trait
-// 
-// NOTE: if this ends with a semicolon instead of a definition, then there is 
+//
+// NOTE: if this ends with a semicolon instead of a definition, then there is
 // no default, and each type needs to define its own method (a lot like S3).
 pub trait Summary {
+    fn bummerize(&self) -> bool;
     fn summarize(&self) -> String {
+        // Default implementation
         String::from("(Read on...)")
     }
     // Other method signatures go here
@@ -27,6 +29,9 @@ pub struct NewsArticle {
 
 // impl Summary for NewsArticle {}
 impl Summary for NewsArticle {
+    fn bummerize(&self) -> bool {
+        false
+    }
     fn summarize(&self) -> String {
         format!("{}, by {}, ({})", self.headline, self.author, self.location)
     }
@@ -40,16 +45,18 @@ pub struct Tweet {
 }
 
 impl Summary for Tweet {
+    fn bummerize(&self) -> bool {
+        true
+    }
     fn summarize(&self) -> String {
         format!("from   : {}\nmessage: \"{}\"", self.username, self.content)
     }
 }
 
-
 // Traits as parameters (in functions) ----------------------------------------
 //
 // This allows us to create more generic functions that can call methods on
-// any type that implements the Summary trait. This means that we can write 
+// any type that implements the Summary trait. This means that we can write
 // functions specific for our types, but these functions will cease to work
 // if String or i32 types are passed.
 
@@ -60,8 +67,8 @@ impl Summary for Tweet {
 
 // Trait bound syntax ~~~
 //
-// The `impl Trait` syntax is sugar for the trait bound syntax. So the above 
-// code is equivalent to: 
+// The `impl Trait` syntax is sugar for the trait bound syntax. So the above
+// code is equivalent to:
 pub fn notify<T: Summary>(item: &T) {
     println!("Breaking news! {}", item.summarize());
 }
@@ -87,7 +94,7 @@ pub fn notify<T: Summary>(item: &T) {
 // Clearer Trait Bounds with `where` Clauses ~~~
 //
 // The Trait bound syntax really shines when you need to have multiple possible
-// traits for individual parameters to avoid your functions from becoming 
+// traits for individual parameters to avoid your functions from becoming
 // overburdened in the definition:
 //
 //      fn some_function<T: Display + Clone, U: Clone + Debug>(t: &T, u &U) -> i32 {
@@ -107,16 +114,12 @@ pub fn notify<T: Summary>(item: &T) {
 // in the return type:
 //
 // NOTE: you can only return ONE TYPE per Trait. This means, that we need to
-// define different functions for different Types.  
+// define different functions for different Types.
 fn returns_summarizable_tweet() -> impl Summary {
     Tweet {
         username: String::from("horse_ebooks"),
-        content: String::from(
-            "of course, as you probably already know, people",
-        ),
+        content: String::from("of course, as you probably already know, people"),
         reply: false,
         retweet: false,
     }
 }
-
-
