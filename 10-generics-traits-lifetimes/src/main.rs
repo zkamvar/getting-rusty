@@ -167,6 +167,14 @@ fn longest<'a>(x: &str, y: &str) -> &'a str {
 struct ImportantExcerpt<'a> {
     part: &'a str,
 }
+// Lifetime names for strct fields always need to be declared after the impl
+// keyword and after the struct's name because those are part of
+// the struct's type
+impl<'a> ImportantExcerpt<'a> {
+    fn level(&self) -> i32 {
+        3
+    }
+}
 
 fn main() {
     // Listing 10-1 ------------------------------
@@ -255,7 +263,7 @@ fn main() {
                           // ---------+
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-    println!("---> Functions");
+    println!("\n---> Functions\n------------");
     // Generic lifetimes in functions
     let string1 = String::from("bennigans");
     let string2 = "shennanigans";
@@ -272,9 +280,13 @@ fn main() {
     // println!("The longest string is {}", result);
     // This is still in scope, we are still returning shennanigans
     println!("The longest string is {}", result1);
-    println!("---> Structs");
+    println!("\n---> Structs\n------------");
+    // An instance of a struct cannot outlive the reference it holds in its
+    // fields.
     let novel = String::from("Call me Ishmael. Some years ago...");
     let first_sentence = novel.split('.').next().expect("Could not find a '.'");
+    // novel does not go out of scope here, so the reference inside of
+    // ImportantExcerpt is valid.
     let i = ImportantExcerpt {
         part: first_sentence,
     };
@@ -282,6 +294,6 @@ fn main() {
         part: first_sentence,
     };
 
-    println!("ImportantExcerpt: {}", i.part);
+    println!("Important Excerpt (level {}): {}", i.level(), i.part);
     println!("{}", j.summarize());
 }
