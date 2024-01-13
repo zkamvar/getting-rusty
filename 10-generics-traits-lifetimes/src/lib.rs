@@ -27,6 +27,20 @@ pub struct NewsArticle {
     pub content: String,
 }
 
+pub struct FirstSentence<'a> {
+    pub part: &'a str,
+}
+
+// <'_> is the anonymous lifetime
+impl Summary for FirstSentence<'_> {
+    fn bummerize(&self) -> bool {
+        true
+    }
+    fn summarize(&self) -> String {
+        format!("First of all: {}", self.part)
+    }
+}
+
 // impl Summary for NewsArticle {}
 impl Summary for NewsArticle {
     fn bummerize(&self) -> bool {

@@ -115,6 +115,59 @@ impl Pint<f32> {
 // is outside of our crate.
 use chapter10::{self, NewsArticle, Summary, Tweet};
 
+// Lifetimes ------------------------------------------------------------------
+use chapter10::FirstSentence;
+// These are ways of declaring how long a variable should live beyond the rust
+// scope.
+/*
+ * This does not compile: The return value needs a lifetime parameter
+fn longest(x: &str, y: &str) -> &str {
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+}
+
+ * The reason for this is because it is impossible to know how the lifetime of
+ * x and y relate to the lifetime of the return value. It makes sense if you
+ * remember about how functions will always take ownership of a reference.
+ *
+ * If we have this pattern, it's not clear what the lifetime of result will be.
+ * let x = "bennigans";
+ * {
+ *    let y = "shenanigans";
+ *    let result = longest(x.as_str(), y.as_str());
+ *    println!("both x and y would be valid here");
+ * }
+ * println!("only x would be vaild here");
+ */
+// Function signature with lifetime annotation
+//
+// Constraint: returned reference will be valid as long as both the parameters
+// are valid.
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+}
+// Note that lifetime is in relation to the _inputs_ A function cannot return
+// a reference created _within_ the function
+/*
+fn longest<'a>(x: &str, y: &str) -> &'a str {
+   let result = String::from("really long string");
+   result.as_str()
+}
+ */
+
+// In Structs, lifetime references need to be added for every reference inside
+// the definition:
+struct ImportantExcerpt<'a> {
+    part: &'a str,
+}
+
 fn main() {
     // Listing 10-1 ------------------------------
     //
@@ -187,4 +240,48 @@ fn main() {
         ),
     };
     println!("SHOE NEWS: {}", article.summarize());
+
+    println!("\n\n--- *** ---\n LIFETIMES\n-----------\n");
+    // Main aim of lifetimes is to prevent _dangling references_:
+    /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    let r;                // ---------+-- 'a
+                          //          |
+    {                     //          |
+        let x = 5;        // -+-- 'b  |
+        r = &x;           //  |       |
+    }                     // -+       |
+                          //          |
+    println!("r: {}", r); //          |
+                          // ---------+
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+    println!("---> Functions");
+    // Generic lifetimes in functions
+    let string1 = String::from("bennigans");
+    let string2 = "shennanigans";
+    let result1 = longest(string1.as_str(), string2);
+    println!("The longest string is {}", result1);
+    {
+        // the 'a lifetime is the part of the scope that _overlaps_,
+        // so the result here is in scope for longer;
+        let string2 = String::from("I am the viper");
+        let result = longest(string1.as_str(), string2.as_str());
+        println!("The longest string is {}", result);
+    }
+    // This is no longer in scope, so it will fail.
+    // println!("The longest string is {}", result);
+    // This is still in scope, we are still returning shennanigans
+    println!("The longest string is {}", result1);
+    println!("---> Structs");
+    let novel = String::from("Call me Ishmael. Some years ago...");
+    let first_sentence = novel.split('.').next().expect("Could not find a '.'");
+    let i = ImportantExcerpt {
+        part: first_sentence,
+    };
+    let j = FirstSentence {
+        part: first_sentence,
+    };
+
+    println!("ImportantExcerpt: {}", i.part);
+    println!("{}", j.summarize());
 }
