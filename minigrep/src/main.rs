@@ -18,9 +18,7 @@ fn main() {
     println!("Searching for: `{}`", config.query);
     println!("in file      :  {}", config.file_path);
 
-    let contents = read_file(config);
-
-    println!("With text:\n{contents}");
+    run(config);
 }
 
 struct Config {
@@ -38,6 +36,11 @@ impl Config {
 
         Ok(Config { query, file_path })
     }
+}
+
+fn run(cfg: Config) {
+    let contents = read_file(cfg);
+    println!("With text:\n{contents}");
 }
 
 fn read_file(cfg: Config) -> String {
