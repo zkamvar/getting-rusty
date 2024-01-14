@@ -1,12 +1,26 @@
 pub fn add(left: usize, right: usize) -> usize {
     left + right
 }
-#[derive(Debug)]
-pub struct Rectangle {
-    width: u32,
-    height: u32,
+
+pub fn greeting(name: &str) -> String {
+    format!("Greetings, {}!", name)
 }
 
+#[derive(Debug)]
+pub struct Rectangle {
+    width: i32,
+    height: i32,
+}
+
+pub fn get_rekt(width: i32, height: i32) -> Rectangle {
+    if width <= 0 || height <= 0 {
+        panic!("Negative or zero widths: start panicking");
+    }
+    Rectangle {
+        width: width,
+        height: height,
+    }
+}
 impl Rectangle {
     pub fn can_hold(&self, other: &Rectangle) -> bool {
         self.width > other.width && self.height > other.height
@@ -19,6 +33,27 @@ impl Rectangle {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn greeting_contains_name() {
+        let result = greeting("Morpheus");
+        // custom assertion messages
+        assert!(
+            result.contains("Morpheus"),
+            "Greeting did not contain name, value was `{}`",
+            result
+        );
+    }
+    #[test]
+    // custom panics
+    #[should_panic(expected = "start panicking")]
+    fn lets_fail_rekt() {
+        get_rekt(-6, 6);
+    }
+    #[test]
+    fn lets_get_rekt() {
+        let rect = get_rekt(6, 6);
+        assert!(rect.is_square());
+    }
     #[test]
     fn big_box_hold_little_box() {
         let larger = Rectangle {
