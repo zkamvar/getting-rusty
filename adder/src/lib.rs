@@ -25,13 +25,14 @@ impl Rectangle {
     pub fn can_hold(&self, other: &Rectangle) -> bool {
         self.width > other.width && self.height > other.height
     }
-    pub fn is_square(&self) -> bool {
+    fn is_square(&self) -> bool {
         self.width == self.height
     }
 }
 
 #[cfg(test)]
 mod tests {
+    // allows for testing of private functions
     use super::*;
     #[test]
     fn greeting_contains_name() {
