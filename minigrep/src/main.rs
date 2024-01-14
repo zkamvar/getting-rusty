@@ -7,5 +7,10 @@ fn main() {
     // will produce OsString values.
     // let args: Vec<ffi::OsString> = env::args_os().collect();
     let args: Vec<String> = env::args().collect();
-    dbg!(args);
+
+    let query = &args[1];
+    let file_path = &args[2];
+
+    println!("Searching for: `{}`", query);
+    println!("in file      :  {}", file_path);
 }
