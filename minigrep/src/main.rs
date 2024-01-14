@@ -15,7 +15,11 @@ fn main() {
     println!("Searching for: `{}`", query);
     println!("in file      :  {}", file_path);
 
-    let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
+    let contents = read_file(file_path.as_str());
 
     println!("With text:\n{contents}");
+}
+
+fn read_file(path: &str) -> String {
+    fs::read_to_string(path).expect("Should have been able to read the file")
 }
