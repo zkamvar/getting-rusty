@@ -14,7 +14,7 @@ fn main() {
     println!("Searching for: `{}`", config.query);
     println!("in file      :  {}", config.file_path);
 
-    let contents = read_file(config.file_path.as_str());
+    let contents = read_file(config);
 
     println!("With text:\n{contents}");
 }
@@ -30,6 +30,7 @@ fn parse_configs(args: &[String]) -> Config {
     Config { query, file_path }
 }
 
-fn read_file(path: &str) -> String {
+fn read_file(cfg: Config) -> String {
+    let path = cfg.file_path.as_str();
     fs::read_to_string(path).expect("Should have been able to read the file")
 }
