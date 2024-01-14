@@ -9,15 +9,20 @@ fn main() {
     // let args: Vec<ffi::OsString> = env::args_os().collect();
     let args: Vec<String> = env::args().collect();
 
-    let query = &args[1];
-    let file_path = &args[2];
+    let (query, file_path) = parse_configs(&args);
 
     println!("Searching for: `{}`", query);
     println!("in file      :  {}", file_path);
 
-    let contents = read_file(file_path.as_str());
+    let contents = read_file(file_path);
 
     println!("With text:\n{contents}");
+}
+
+fn parse_configs(args: &[String]) -> (&str, &str) {
+    let query = &args[1];
+    let file_path = &args[2];
+    (query, file_path)
 }
 
 fn read_file(path: &str) -> String {
