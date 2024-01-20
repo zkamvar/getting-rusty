@@ -1,3 +1,4 @@
+use std::thread;
 // Closures:: capturing environment and scope
 
 // Capturing the environment
@@ -57,4 +58,52 @@ fn main() {
         "The user with preference {:?} gets {:?}",
         user_pref2, giveaway2
     );
+
+    // the closures take the first type that use them.
+    let untyped_1 = |x| x; // unknown now, but will take a string due to
+                           // the closure later on
+    let untyped_2 = |y| y; // will take a number later on
+
+    println!(
+        "{:?} and {:?} are from untyped closures",
+        untyped_1(String::from("hello")),
+        untyped_2(5)
+    );
+
+    println!("\n## Capturing References or Moving Ownership ------\n");
+    {
+        println!("---| Borrowing Immutably\n");
+        let list = vec![1, 2, 3];
+        println!("Before closure is defined: {:?}", list);
+
+        let only_borrows = || println!("From closure: {:?}", list);
+
+        println!("Before calling closure: {:?}", list);
+        only_borrows();
+        println!("After calling closure: {:?}", list);
+    }
+
+    {
+        println!("\n---| Borrowing mutably\n");
+        let mut list = vec![1, 2, 3];
+        println!("Before closure is defined: {:?}", list);
+
+        let mut borrows_mutably = || list.push(7);
+
+        // The print macro cannot borrow list because it was mutably
+        // borrowed when the closure was defined.
+        // println!("Before calling closure: {:?}", list);
+        borrows_mutably();
+        println!("After calling closure: {:?}", list);
+    }
+
+    {
+        println!("\n---| Taking ownership with `move`\n");
+        let list = vec![1, 2, 3];
+        println!("Before closure is defined: {:?}", list);
+
+        let move_it = move || println!("From thread: {:?}", list);
+
+        thread::spawn(move_it).join().unwrap();
+    }
 }
