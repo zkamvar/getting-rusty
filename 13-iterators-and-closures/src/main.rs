@@ -128,11 +128,21 @@ fn main() {
                 height: 12,
             },
         ];
+        let mut num_sort_operations = 0;
         // The signature is FnMut
         // sort_by_key(self mut f: ())
-        list.sort_by_key(|r| r.width);
+        list.sort_by_key(|r| {
+            // This works because both the lest and the counter are mutable
+            num_sort_operations += 1;
+            r.width
+        });
         println!("{:#?}", list);
-        list.sort_by_key(|r| r.height);
+        println!("Sort called {} times", num_sort_operations);
+        list.sort_by_key(|r| {
+            num_sort_operations += 1;
+            r.height
+        });
         println!("{:#?}", list);
+        println!("Sort called {} times", num_sort_operations);
     }
 }
