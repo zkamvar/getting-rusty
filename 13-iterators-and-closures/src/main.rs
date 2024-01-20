@@ -106,4 +106,33 @@ fn main() {
 
         thread::spawn(move_it).join().unwrap();
     }
+
+    println!("## Moving Captured Values Out of Closures and the `Fn` traits");
+    {
+        #[derive(Debug)]
+        struct Rectangle {
+            width: u32,
+            height: u32,
+        }
+        let mut list = [
+            Rectangle {
+                width: 10,
+                height: 1,
+            },
+            Rectangle {
+                width: 3,
+                height: 5,
+            },
+            Rectangle {
+                width: 7,
+                height: 12,
+            },
+        ];
+        // The signature is FnMut
+        // sort_by_key(self mut f: ())
+        list.sort_by_key(|r| r.width);
+        println!("{:#?}", list);
+        list.sort_by_key(|r| r.height);
+        println!("{:#?}", list);
+    }
 }
