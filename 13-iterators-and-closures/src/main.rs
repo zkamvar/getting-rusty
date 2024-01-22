@@ -145,4 +145,57 @@ fn main() {
         println!("{:#?}", list);
         println!("Sort called {} times", num_sort_operations);
     }
+    println!("\n# Iterators ============\n");
+    {
+        let v1 = vec![1, 2, 3];
+        let v1_iter = v1.iter();
+        for val in v1_iter {
+            println!("Got: {}", val);
+        }
+    }
+    println!("\n## The `Iterator` Trait and the `next` Method ------\n");
+    {
+        println!("See Tests");
+
+        println!("|--- Methods that Produce Other Iterators\n");
+
+        let v1: Vec<i32> = vec![1, 2, 3];
+        // map() itself produces an iterator over the modified values
+        let _ = v1.iter().map(|x| x + 1);
+        // we must collect it if we want to use the results
+        let v2: Vec<i32> = v1.iter().map(|x| x + 1).collect();
+        assert_eq!(v2, vec![2, 3, 4]);
+        println!("v1: {:?}\nv2: {:?}", v1, v2);
+    }
+}
+#[test]
+fn iterator_demonstration() {
+    let v1 = vec![1, 2, 3];
+
+    // NOTE:
+    //   use v1.into_iter() to returned owned values
+    //   use v1.iter_mut() to returned mutable references
+    let mut v1_iter = v1.iter();
+
+    assert_eq!(v1_iter.next(), Some(&1));
+    assert_eq!(v1_iter.next(), Some(&2));
+    assert_eq!(v1_iter.next(), Some(&3));
+    assert_eq!(v1_iter.next(), None);
+}
+
+#[test]
+fn iterator_sum() {
+    println!("Methods that consume the iterator: .sum()");
+    let v1 = vec![1, 2, 3];
+
+    let v1_iter = v1.iter();
+
+    // total takes ownership of v1_iter
+    let total: i32 = v1_iter.sum();
+    // NOTE: the iterator creates immutable references to the original vector.
+    // because these are refrences, this allows the iterator to not take
+    // ownership
+    println!("v1: {:?}", v1);
+
+    assert_eq!(total, 6);
 }
