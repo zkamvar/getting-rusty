@@ -9,27 +9,23 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn build(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("\
-minigrep requires at least two arguments
-USAGE:
-    minigrep <query> <file> [-i|--ignore-case]
+    pub fn build(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
+        // skip the program name
+        args.next();
 
-ARGUMENTS:
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Query string needed"),
+        };
 
-    query   a string to search for
-    file    the file to search in
-    ignore  an optional flag to ignore case in the search
-");
-        }
-        let query = args[1].clone();
-        let file_path = args[2].clone();
-        let ignore_case = if args.len() > 3 {
-            // command line arg takes precedent
-            !args[3].clone().is_empty()
-        } else {
-            env::var("IGNORE_CASE").is_ok()
+        let file_path = match args.next() {
+            Some(arg) => arg,
+            None => return Err("File path needed"),
+        };
+
+        let ignore_case = match args.next() {
+            Some(arg) => !arg.is_empty(),
+            None => env::var("IGNORE_CASE").is_ok(),
         };
 
         Ok(Config {
