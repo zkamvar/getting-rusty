@@ -2,6 +2,21 @@ use std::env;
 use std::error::Error;
 use std::fs;
 
+/// Hold the configuration for the search
+///
+/// # Examples
+///
+/// ```
+/// // A config to find the word "use" in the file README.md in
+/// // a case-insensitive manner
+/// use minigrep::Config;
+///
+/// let conf = Config {
+///     String::from("use"),
+///     String::from("README.md"),
+///     true
+/// };
+/// ```
 pub struct Config {
     pub query: String,
     pub file_path: String,
@@ -9,6 +24,23 @@ pub struct Config {
 }
 
 impl Config {
+    /// Build a Config object
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use mingrep::Config
+    /// // normally this would come in via the command line with env::args()
+    ///
+    /// let args = vec![String::from("use"),
+    ///   String::from("README.md"),
+    ///   String::from("--ignore")
+    /// ];
+    ///
+    /// let cfg = Config::build(args.iter()).unwrap_or_else(|err|{
+    ///     errprintln!("Problems")
+    /// });
+    /// ```
     pub fn build(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
         // skip the program name
         args.next();
@@ -53,6 +85,17 @@ pub fn run(cfg: Config) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+/// Search contents of a file for a given query (case sensitive)
+///
+/// # Example
+///
+/// ```
+/// use mingrep::search;
+///
+/// let contents = String::from("Were I to weep\nI would weep for me\nnot for thee");
+/// let query = String::from("We");
+/// println("{:?}", search(query, contents));
+/// ```
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     contents
         .lines()
@@ -60,6 +103,17 @@ pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
         .collect()
 }
 
+/// Search contents of a file for a given query (case insensitive)
+///
+/// # Example
+///
+/// ```
+/// use mingrep::search_case_insensitive;
+///
+/// let contents = String::from("Were I to weep\nI would weep for me\nnot for thee");
+/// let query = String::from("We");
+/// println("{:?}", search_case_insensitive(query, contents));
+/// ```
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let query = query.to_lowercase();
     contents
