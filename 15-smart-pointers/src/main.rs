@@ -108,4 +108,14 @@ fn main() {
         println!("Node {:?} is referenced in {:?} and {:?}", a, b, c);
     }
     println!("count after c goes out of scope = {}", Rc::strong_count(&a));
+
+    println!("`RefCell<T>` and the Interior Mutability Pattern");
+    // RefCell<T> is a lot like Box<T> _except_ that if an ownership rule is
+    // violated, it is violated at runtime and not compile time.
+    //
+    // The following is impossible, but there are situations where you will want
+    // a value to be mutables _some of the time_:
+    //
+    // let x = 5;
+    // let y = &mut x;
 }
