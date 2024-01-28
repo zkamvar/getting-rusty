@@ -1,15 +1,20 @@
+// The Box<T> immutable pointer: one owner -------------------------------------
 #[derive(Debug)]
 enum List {
     Cons(i32, Box<List>), // Box<List> is a pointer to the next List enum
     Nil,
 }
 
+// The Rc<T> immutable pointer: many owners ------------------------------------
 use std::rc::Rc;
 #[derive(Debug)]
 enum Node {
     Cons(i32, Rc<Node>),
     Nil,
 }
+
+// Demonstration of Deref ------------------------------------------------------
+use std::ops::Deref;
 
 struct MyBox<T>(T);
 
@@ -18,8 +23,6 @@ impl<T> MyBox<T> {
         MyBox(x)
     }
 }
-
-use std::ops::Deref;
 impl<T> Deref for MyBox<T> {
     // associated type: slightly different way of declaring generic parameter
     // (see chapter 19)
@@ -30,6 +33,7 @@ impl<T> Deref for MyBox<T> {
     }
 }
 
+// Demonstration of Drop trait -------------------------------------------------
 #[derive(Debug)]
 struct CustomSmartPointer {
     data: String,
