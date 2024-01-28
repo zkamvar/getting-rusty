@@ -4,6 +4,13 @@ enum List {
     Nil,
 }
 
+use std::rc::Rc;
+#[derive(Debug)]
+enum Node {
+    Cons(i32, Rc<Node>),
+    Nil,
+}
+
 struct MyBox<T>(T);
 
 impl<T> MyBox<T> {
@@ -20,6 +27,20 @@ impl<T> Deref for MyBox<T> {
     fn deref(&self) -> &Self::Target {
         // index into a Tuple. In this case, MyBox is a length 1 tuple.
         &self.0
+    }
+}
+
+#[derive(Debug)]
+struct CustomSmartPointer {
+    data: String,
+}
+
+impl Drop for CustomSmartPointer {
+    fn drop(&mut self) {
+        println!(
+            "\nㅠ_ㅠ Dropping CustomSmartPointer with data `{}`",
+            self.data
+        );
     }
 }
 
@@ -55,4 +76,32 @@ fn main() {
     assert_eq!(5, x);
     assert_eq!(5, *y);
     assert_eq!(5, *(y.deref()));
+
+    println!("## The `Drop` Trait: Running Code on Cleanup ------\n");
+
+    let c = CustomSmartPointer {
+        data: String::from("my string"),
+    };
+    let d = CustomSmartPointer {
+        data: String::from("your string"),
+    };
+
+    println!("CustomSmartPointers {:?} and {:?} created", c, d);
+    drop(c);
+    println!("pointer for c dropped before the end of main\n");
+
+    println!("## `Rc<T>, Reference Counted Pointer`");
+    // The reference counted pointer accounts for _multiple_ owners of a given
+    // value. This is common for graphs.
+    let terminus = Rc::new(Node::Cons(10, Rc::new(Node::Nil)));
+    let a = Rc::new(Node::Cons(5, terminus));
+    println!("count after creating a = {}", Rc::strong_count(&a));
+    let b = Node::Cons(3, Rc::clone(&a));
+    println!("count after creating a = {}", Rc::strong_count(&a));
+    {
+        let c = Node::Cons(4, Rc::clone(&a));
+        println!("count after creating a = {}", Rc::strong_count(&a));
+        println!("Node {:?} is referenced in {:?} and {:?}", a, b, c);
+    }
+    println!("count after c goes out of scope = {}", Rc::strong_count(&a));
 }
