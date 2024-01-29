@@ -1,16 +1,16 @@
 // The Box<T> immutable pointer: one owner -------------------------------------
 #[derive(Debug)]
-enum List {
-    Cons(i32, Box<List>), // Box<List> is a pointer to the next List enum
-    Nil,
+enum BList {
+    BCons(i32, Box<BList>), // Box<BList> is a pointer to the next BList enum
+    BNil,
 }
 
 // The Rc<T> immutable pointer: many owners ------------------------------------
 use std::rc::Rc;
 #[derive(Debug)]
-enum Node {
-    Cons(i32, Rc<Node>),
-    Nil,
+enum RList {
+    RCons(i32, Rc<RList>),
+    RNil,
 }
 
 // Demonstration of Deref ------------------------------------------------------
@@ -48,7 +48,8 @@ impl Drop for CustomSmartPointer {
     }
 }
 
-use crate::List::{Cons, Nil};
+use crate::BList::{BCons, BNil};
+use crate::RList::{RCons, RNil};
 
 fn main() {
     println!("## Box<T> will store data on the heap ------ \n");
@@ -58,10 +59,10 @@ fn main() {
     println!("---| Enabling recursive types with Boxes");
     // at compile time, it's not clear how much space a recursive type will need,
     // so a Box helps Rust understand that it can allocate memory from the heap
-    let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
-    let list3 = Cons(3, Box::new(Nil));
-    let list2 = Cons(2, Box::new(list3));
-    let list1 = Cons(1, Box::new(list2));
+    let list = BCons(1, Box::new(BCons(2, Box::new(BCons(3, Box::new(BNil))))));
+    let list3 = BCons(3, Box::new(BNil));
+    let list2 = BCons(2, Box::new(list3));
+    let list1 = BCons(1, Box::new(list2));
     println!("We've got a list {:?}\nand another list {:?}", list, list1);
 
     println!("## Treating Smart Pointers with the `Deref` Trait ------\n");
@@ -97,15 +98,15 @@ fn main() {
     println!("## `Rc<T>, Reference Counted Pointer`");
     // The reference counted pointer accounts for _multiple_ owners of a given
     // value. This is common for graphs.
-    let terminus = Rc::new(Node::Cons(10, Rc::new(Node::Nil)));
-    let a = Rc::new(Node::Cons(5, terminus));
+    let terminus = Rc::new(RCons(10, Rc::new(RNil)));
+    let a = Rc::new(RCons(5, terminus));
     println!("count after creating a = {}", Rc::strong_count(&a));
-    let b = Node::Cons(3, Rc::clone(&a));
+    let b = RCons(3, Rc::clone(&a));
     println!("count after creating a = {}", Rc::strong_count(&a));
     {
-        let c = Node::Cons(4, Rc::clone(&a));
+        let c = RCons(4, Rc::clone(&a));
         println!("count after creating a = {}", Rc::strong_count(&a));
-        println!("Node {:?} is referenced in {:?} and {:?}", a, b, c);
+        println!("RList {:?} is referenced in {:?} and {:?}", a, b, c);
     }
     println!("count after c goes out of scope = {}", Rc::strong_count(&a));
 
