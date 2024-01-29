@@ -13,6 +13,13 @@ enum RList {
     RNil,
 }
 
+use std::cell::RefCell;
+#[derive(Debug)]
+enum CList {
+    CCons(Rc<RefCell<i32>>, Rc<CList>),
+    CNil,
+}
+
 // Demonstration of Deref ------------------------------------------------------
 use std::ops::Deref;
 
@@ -49,6 +56,7 @@ impl Drop for CustomSmartPointer {
 }
 
 use crate::BList::{BCons, BNil};
+use crate::CList::{CCons, CNil};
 use crate::RList::{RCons, RNil};
 
 fn main() {
@@ -119,4 +127,27 @@ fn main() {
     //
     // let x = 5;
     // let y = &mut x;
+
+    // Using Rc<RefCell<i32>> allows the value to have multiple owners. The fact
+    // that it is a ref cell allows usto mutate it.
+    let value = Rc::new(RefCell::new(5));
+    let a = Rc::new(CCons(Rc::clone(&value), Rc::new(CNil)));
+    let b = Rc::new(CCons(Rc::new(RefCell::new(3)), Rc::clone(&a)));
+    let c = Rc::new(CCons(Rc::new(RefCell::new(4)), Rc::clone(&a)));
+
+    println!("a before = {:?}", a);
+    println!("b before = {:?}", b);
+    println!("c before = {:?}", c);
+
+    let old = value
+        .borrow() // need to borrow to clone the value inside.
+        .clone();
+
+    *value.borrow_mut() += 10;
+
+    println!("old = {:?}, current = {:?}", old, value);
+
+    println!("a after = {:?}", a);
+    println!("b after = {:?}", b);
+    println!("c after = {:?}", c);
 }
