@@ -98,4 +98,29 @@ mod test {
             1
         );
     }
+    #[test]
+    fn it_is_silent_under_75_percent() {
+        let mock_messenger = MockMessenger::new();
+        let mut limit_tracker = LimitTracker::new(&mock_messenger, 100);
+        limit_tracker.set_value(75);
+
+        assert_eq!(
+            mock_messenger
+                .sent_messages
+                .borrow() // creates an immutable reference (a la &)
+                // returning a `Ref<T>` value
+                .len(),
+            1
+        );
+        limit_tracker.set_value(74);
+
+        assert_eq!(
+            mock_messenger
+                .sent_messages
+                .borrow() // creates an immutable reference (a la &)
+                // returning a `Ref<T>` value
+                .len(),
+            1
+        );
+    }
 }

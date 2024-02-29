@@ -13,6 +13,7 @@ enum RList {
     RNil,
 }
 
+// The Rc<RefCell<T>> interior mutability pattern ------------------------------
 use std::cell::RefCell;
 #[derive(Debug)]
 enum CList {
@@ -118,7 +119,7 @@ fn main() {
     }
     println!("count after c goes out of scope = {}", Rc::strong_count(&a));
 
-    println!("`RefCell<T>` and the Interior Mutability Pattern");
+    println!("## `RefCell<T>` and the Interior Mutability Pattern");
     // RefCell<T> is a lot like Box<T> _except_ that if an ownership rule is
     // violated, it is violated at runtime and not compile time.
     //
