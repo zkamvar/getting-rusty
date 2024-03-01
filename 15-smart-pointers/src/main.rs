@@ -21,6 +21,31 @@ enum CList {
     CNil,
 }
 
+// Demonstrating memory leaks --------------------------------------------------
+#[derive(Debug)]
+enum List {
+    Cons(i32, RefCell<Rc<List>>),
+    Nil,
+}
+
+impl List {
+    fn tail(&self) -> Option<&RefCell<Rc<List>>> {
+        match self {
+            Cons(_, item) => Some(item),
+            Nil => None,
+        }
+    }
+}
+
+// Demonstrate weak references -------------------------------------------------
+use std::rc::Weak;
+#[derive(Debug)]
+struct Node {
+    value: i32,
+    parent: RefCell<Weak<Node>>,      // the parent is NOT owned
+    children: RefCell<Vec<Rc<Node>>>, // Node OWNS the child
+}
+
 // Demonstration of Deref ------------------------------------------------------
 use std::ops::Deref;
 
@@ -58,6 +83,7 @@ impl Drop for CustomSmartPointer {
 
 use crate::BList::{BCons, BNil};
 use crate::CList::{CCons, CNil};
+use crate::List::{Cons, Nil};
 use crate::RList::{RCons, RNil};
 
 fn main() {
@@ -151,4 +177,77 @@ fn main() {
     println!("a after = {:?}", a);
     println!("b after = {:?}", b);
     println!("c after = {:?}", c);
+
+    println!("## Reference Cycles Can Leak Memory");
+    // NOTE: this is the situation where memory is allocated and used, but never
+    //       freed as opposed to the situation where we attempt to access memory
+    //       that we have never allocated
+    let a = Rc::new(Cons(5, RefCell::new(Rc::new(Nil))));
+
+    println!("a initial rc count = {}", Rc::strong_count(&a));
+    println!("a next item = {:?}", a.tail());
+
+    let b = Rc::new(Cons(10, RefCell::new(Rc::clone(&a))));
+
+    println!("a rc count after b creation = {}", Rc::strong_count(&a));
+    println!("b initial rc count = {}", Rc::strong_count(&b));
+    println!("b next item = {:?}", b.tail());
+
+    if let Some(link) = a.tail() {
+        // NOTE: `Rc::clone()` increases the `strong_count` of an Rc<T> instance
+        //       which is only cleaned up when its `strong_count` is 0.
+        *link.borrow_mut() = Rc::clone(&b);
+    }
+
+    println!("b rc count after changing a = {}", Rc::strong_count(&b));
+    println!("a rc count after changing a = {}", Rc::strong_count(&a));
+
+    // THIS OVERFLOWS THE STACK
+    // println!("a next item = {:?}", a.tail());
+    println!("If we try to access this, it causes a stack overflow\n");
+    println!("---| Preventing Reference Cycles: Turing an `Rc<T>` into a `Weak<T>`");
+    // Weak references are created by calls to `Rc::downgrade()` (as opposed to
+    // `Rc::clone()`. There is no expression of ownership here and `weak_count`
+    // is increased by one.
+    //
+    // NOTE: `weak_count` does not need to be 0 for the `Rc<T>` instance to be
+    //       cleaned up.
+    //
+    // Thus, use `Rc::updgrade()` to get an `Option<Rc<T>>` to check for Some()
+    // or None.
+    let leaf = Rc::new(Node {
+        value: 3,
+        parent: RefCell::new(Weak::new()),
+        children: RefCell::new(vec![]),
+    });
+
+    println!(
+        "leaf strong = {}, weak = {}\nleaf parent = {:?}",
+        Rc::strong_count(&leaf),
+        Rc::weak_count(&leaf),
+        leaf.parent.borrow().upgrade()
+    );
+
+    let branch = Rc::new(Node {
+        value: 5,
+        parent: RefCell::new(Weak::new()),
+        // NOTE: this Rc::clone(&leaf) increases the `strong_count` for leaf
+        children: RefCell::new(vec![Rc::clone(&leaf)]),
+    });
+
+    // NOTE: this Rc::downgrade() increases the `weak_count` for branch
+    *leaf.parent.borrow_mut() = Rc::downgrade(&branch);
+    println!(
+        "branch strong = {}, weak = {}\nbranch parent = {:?}",
+        Rc::strong_count(&branch),
+        Rc::weak_count(&branch),
+        branch.parent.borrow().upgrade()
+    );
+
+    println!(
+        "leaf strong = {}, weak = {}\nleaf parent = {:?}",
+        Rc::strong_count(&leaf),
+        Rc::weak_count(&leaf),
+        leaf.parent.borrow().upgrade()
+    );
 }
