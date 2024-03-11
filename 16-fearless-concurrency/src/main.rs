@@ -1,5 +1,6 @@
 use std::sync::mpsc; // MSG
                      // mpsc = multiple producer, single consumer
+use std::sync::{Arc, Mutex}; // Mutex
 use std::thread;
 use std::time::Duration;
 
@@ -22,6 +23,12 @@ fn main() {
     channel_deluge();
     println!();
     channel_factory();
+
+    println!("## Shared-State Concurrency\n");
+    // Mutex ---
+    mutex_toot();
+    println!();
+    mutex_share();
 }
 
 // API ---
@@ -155,4 +162,40 @@ fn channel_factory() {
     for received in rx {
         println!("Got: {}", received);
     }
+}
+
+// Mutex ---
+fn mutex_toot() {
+    println!("|--- The API of `Mutex<T>`");
+    let m = Mutex::new(5);
+    {
+        let mut num = m.lock().unwrap();
+        *num = 6;
+    }
+    // num goes out of scope here and the lock is free.
+
+    println!("m = {:?}", m);
+}
+
+fn mutex_share() {
+    println!("|--- Sharing a `Mutex<T>` Between Multiple Threads");
+
+    let counter = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let counter = Arc::clone(&counter);
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *counter.lock().unwrap());
 }
