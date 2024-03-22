@@ -21,9 +21,13 @@ impl Post {
         self.content.push_str(text);
     }
     pub fn content(&self) -> &str {
-        ""
+        self.state //    Option<Box<dyn State>>
+            .as_ref() // Option<&Box<dyn State>>
+            .unwrap() // &Box<dyn State>
+            .content(self) // State (because of deref coercion)
     }
     pub fn request_review(&mut self) {
+        // NOTE: if let Some() always ensures that we have a Some value
         if let Some(s) = self.state.take() {
             self.state = Some(s.request_review())
         }
@@ -41,6 +45,13 @@ trait State {
     //       Post can be transformed (because the ownership of box is passed on)
     fn request_review(self: Box<Self>) -> Box<dyn State>;
     fn approve(self: Box<Self>) -> Box<dyn State>;
+    fn content<'a>(&self, post: &'a Post) -> &'a str {
+        // default is empty string slice because we do not need it for
+        // Draft or PendingReview.
+        // The lifetimes here ensure that the content we create here has
+        // the same lifetime as the Post.
+        ""
+    }
 }
 
 // Objects implementing the State trait
@@ -71,5 +82,8 @@ impl State for Published {
     }
     fn approve(self: Box<Self>) -> Box<dyn State> {
         self
+    }
+    fn content<'a>(&self, post: &'a Post) -> &'a str {
+        &post.content
     }
 }
