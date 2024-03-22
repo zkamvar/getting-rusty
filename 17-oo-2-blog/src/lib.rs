@@ -23,5 +23,9 @@ trait State {}
 
 // The Draft Object has the State trait.
 struct Draft {}
+struct PendingReview {}
+struct Published {}
 
 impl State for Draft {}
+impl State for PendingReview {}
+impl State for Published {}
