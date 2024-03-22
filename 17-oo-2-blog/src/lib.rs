@@ -7,6 +7,7 @@
 pub struct Post {
     state: Option<Box<dyn State>>,
     content: String,
+    approved: bool,
 }
 
 impl Post {
@@ -14,6 +15,7 @@ impl Post {
         Post {
             state: Some(Box::new(Draft {})),
             content: String::new(),
+            approved: false,
         }
     }
     pub fn add_text(&mut self, text: &str) {
@@ -34,7 +36,18 @@ impl Post {
     }
     pub fn approve(&mut self) {
         if let Some(s) = self.state.take() {
-            self.state = Some(s.approve())
+            // require two approvals
+            if self.approved {
+                self.state = Some(s.approve())
+            } else {
+                self.approved = true;
+                self.state = Some(s.request_review())
+            }
+        }
+    }
+    pub fn reject(&mut self) {
+        if let Some(s) = self.state.take() {
+            self.state = Some(s.reject())
         }
     }
 }
@@ -45,6 +58,7 @@ trait State {
     //       Post can be transformed (because the ownership of box is passed on)
     fn request_review(self: Box<Self>) -> Box<dyn State>;
     fn approve(self: Box<Self>) -> Box<dyn State>;
+    fn reject(self: Box<Self>) -> Box<dyn State>;
     fn content<'a>(&self, post: &'a Post) -> &'a str {
         // default is empty string slice because we do not need it for
         // Draft or PendingReview.
@@ -54,13 +68,16 @@ trait State {
     }
 }
 
-// Objects implementing the State trait
+// Objects implementing the State trait ========================================
 struct Draft {}
 impl State for Draft {
     fn request_review(self: Box<Self>) -> Box<dyn State> {
         Box::new(PendingReview {})
     }
     fn approve(self: Box<Self>) -> Box<dyn State> {
+        self
+    }
+    fn reject(self: Box<Self>) -> Box<dyn State> {
         self
     }
 }
@@ -73,6 +90,9 @@ impl State for PendingReview {
     fn approve(self: Box<Self>) -> Box<dyn State> {
         Box::new(Published {})
     }
+    fn reject(self: Box<Self>) -> Box<dyn State> {
+        Box::new(Draft {})
+    }
 }
 
 struct Published {}
@@ -81,6 +101,9 @@ impl State for Published {
         self
     }
     fn approve(self: Box<Self>) -> Box<dyn State> {
+        self
+    }
+    fn reject(self: Box<Self>) -> Box<dyn State> {
         self
     }
     fn content<'a>(&self, post: &'a Post) -> &'a str {
