@@ -16,16 +16,39 @@ impl Post {
             content: String::new(),
         }
     }
+    pub fn add_text(&mut self, text: &str) {
+        // Does not depend on state of the post; not part of the state pattern
+        self.content.push_str(text);
+    }
+    pub fn content(&self) -> &str {
+        ""
+    }
+    pub fn request_review(&mut self) {
+        if let Some(s) = self.state.take() {
+            self.state = Some(s.request_review())
+        }
+    }
 }
 
 // Defines behavior shared by different post states.
-trait State {}
+trait State {
+    fn request_review(self: Box<Self>) -> Box<dyn State>;
+}
 
-// The Draft Object has the State trait.
+// Objects implementing the State trait
 struct Draft {}
-struct PendingReview {}
-struct Published {}
+impl State for Draft {
+    fn request_review(self: Box<Self>) -> Box<dyn State> {
+        Box::new(PendingReview {})
+    }
+}
 
-impl State for Draft {}
+struct PendingReview {}
 impl State for PendingReview {}
-impl State for Published {}
+
+struct Published {}
+impl State for Published {
+    fn request_review(self: Box<Self>) -> Box<dyn State> {
+        self
+    }
+}
