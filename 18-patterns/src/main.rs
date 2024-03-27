@@ -297,4 +297,48 @@ fn main() {
             println!("A range: ({first}, {last})");
         }
     }
+    println!();
+
+    // ------------------------------------------------
+    println!("---| Extra Condidtionals with Match Guards");
+
+    println!(
+        "match thing {{
+    Some(x) [condition on x] => {{do stuff}},
+    Some(x) => {{do other stuff}},
+    None => (),
+}}"
+    );
+
+    let num = Some(4);
+
+    match num {
+        Some(x) if x % 2 == 0 => println!("The number {} is even", x),
+        Some(x) => println!("The number {} is odd", x),
+        None => (),
+    }
+
+    let x = Some(5);
+    let y = 10;
+
+    match x {
+        Some(50) => println!("Got 50"),
+        Some(n) if n == y => println!("Matched, n = {n}"),
+        _ => println!("Default case, x = {:?}", x),
+    }
+
+    println!("at the end: x = {:?}, y = {y}", x);
+
+    let x = 4;
+    let y = false;
+
+    match x {
+        // equivalent to (4 | 5 | 6) if y
+        4 | 5 | 6 if y => println!("yes"),
+        _ => println!("no"),
+    }
+    println!();
+
+    // ------------------------------------------------
+    println!("---| @ Bindings");
 }
