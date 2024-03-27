@@ -341,4 +341,19 @@ fn main() {
 
     // ------------------------------------------------
     println!("---| @ Bindings");
+    enum Msg {
+        Hello { id: i32 },
+    }
+
+    let msg = Msg::Hello { id: 5 };
+
+    match msg {
+        Msg::Hello {
+            id: id_variable @ 3..=7,
+        } => println!("Found an id in range: {}", id_variable),
+        Msg::Hello { id: 10..=12 } => {
+            println!("Found an id in another range")
+        }
+        Msg::Hello { id } => println!("Found some other id: {}", id),
+    }
 }
