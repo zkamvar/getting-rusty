@@ -243,4 +243,58 @@ fn main() {
 
     // ------------------------------------------------
     println!("---| Ignoring Values in a Pattern");
+    println!("   |___| ... Entire values with _");
+    fn foo(_: i32, y: i32) {
+        println!("This code only uses the y parameter: {}", y);
+        println!(
+            "Useful when implementing a trait with a certain type signature, but you do not
+            need a particular parameter."
+        )
+    }
+    foo(3, 4);
+    println!("   |___| ... Parts of a Value with a Nested _");
+
+    let mut setting_value = Some(5);
+    let new_setting_value = Some(10);
+
+    match (setting_value, new_setting_value) {
+        (Some(_), Some(_)) => {
+            println!("Can't overwrite an existing customized value");
+        }
+        _ => {
+            setting_value = new_setting_value;
+        }
+    }
+
+    println!("setting is {:?}", setting_value);
+
+    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (first, _, third, _, fifth) => {
+            println!("Some numbers: {first}, {third}, {fifth}");
+        }
+    }
+    println!("   |___| ... Unused Variable by Starting Its Name with _");
+    // this variable IS still bound and behaves according to the borrowing rules
+    let _x = 5;
+
+    println!("   |___| ... Remaining Parts of a Value with ..");
+
+    struct Point3D {
+        x: i32,
+        y: i32,
+        z: i32,
+    }
+
+    let origin = Point3D { x: 0, y: 0, z: 0 };
+    match origin {
+        Point3D { x, .. } => println!("x is {}", x),
+    }
+
+    match numbers {
+        (first, .., last) => {
+            println!("A range: ({first}, {last})");
+        }
+    }
 }
