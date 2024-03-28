@@ -1,6 +1,18 @@
 use std::thread;
+pub struct Worker {
+    id: usize,
+    thread: thread::JoinHandle<()>,
+}
 pub struct ThreadPool {
-    threads: Vec<thread::JoinHandle<()>>,
+    workers: Vec<Worker>,
+}
+
+impl Worker {
+    /// Spawn a new thread for a Worker
+    pub fn new(id: usize) -> Worker {
+        let thread = thread::spawn(|| {});
+        Worker { id, thread }
+    }
 }
 
 impl ThreadPool {
@@ -14,13 +26,13 @@ impl ThreadPool {
     pub fn new(size: usize) -> ThreadPool {
         assert!(size > 0);
 
-        let mut threads = Vec::with_capacity(size);
+        let mut workers = Vec::with_capacity(size);
 
-        for _ in 0..size {
-            // create some threads and store them in a vector
+        for id in 0..size {
+            workers.push(Worker::new(id));
         }
 
-        ThreadPool { threads }
+        ThreadPool { workers }
     }
     // NOTE: CHALLENGE to create a build() function that can have error handling
     // pub fn build(size: usize) -> Result<ThreadPool, PoolCreationError> {}
