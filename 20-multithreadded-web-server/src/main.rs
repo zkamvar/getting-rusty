@@ -1,3 +1,4 @@
+use hello::ThreadPool;
 use std::{
     fs,
     io::{prelude::*, BufReader},
@@ -11,8 +12,9 @@ fn main() {
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();
+        let pool = ThreadPool::new(4); // limit the number of threads
 
-        thread::spawn(|| {
+        pool.execute(|| {
             handle_connection(stream);
         });
     }
