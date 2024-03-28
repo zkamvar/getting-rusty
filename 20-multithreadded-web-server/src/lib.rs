@@ -1,11 +1,14 @@
-use std::thread;
+use std::{sync::mpsc, thread};
 struct Worker {
     id: usize,
     thread: thread::JoinHandle<()>,
 }
 pub struct ThreadPool {
     workers: Vec<Worker>,
+    sender: mpsc::Sender<Job>,
 }
+
+struct Job;
 
 impl Worker {
     /// Spawn a new thread for a Worker
@@ -26,13 +29,15 @@ impl ThreadPool {
     pub fn new(size: usize) -> ThreadPool {
         assert!(size > 0);
 
+        let (sender, receiver) = mpsc::channel();
+
         let mut workers = Vec::with_capacity(size);
 
         for id in 0..size {
             workers.push(Worker::new(id));
         }
 
-        ThreadPool { workers }
+        ThreadPool { workers, sender }
     }
     // NOTE: CHALLENGE to create a build() function that can have error handling
     // pub fn build(size: usize) -> Result<ThreadPool, PoolCreationError> {}
