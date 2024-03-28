@@ -1,5 +1,5 @@
 use std::thread;
-pub struct Worker {
+struct Worker {
     id: usize,
     thread: thread::JoinHandle<()>,
 }
@@ -9,7 +9,7 @@ pub struct ThreadPool {
 
 impl Worker {
     /// Spawn a new thread for a Worker
-    pub fn new(id: usize) -> Worker {
+    fn new(id: usize) -> Worker {
         let thread = thread::spawn(|| {});
         Worker { id, thread }
     }
